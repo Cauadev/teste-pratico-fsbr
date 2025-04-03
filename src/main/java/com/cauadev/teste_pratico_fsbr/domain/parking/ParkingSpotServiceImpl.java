@@ -2,6 +2,7 @@ package com.cauadev.teste_pratico_fsbr.domain.parking;
 
 import com.cauadev.teste_pratico_fsbr.domain.parking.dtos.CreateParkingSpotDto;
 import com.cauadev.teste_pratico_fsbr.domain.parking.enums.ParkingSpotStatus;
+import com.cauadev.teste_pratico_fsbr.domain.parking.enums.ParkingSpotType;
 import com.cauadev.teste_pratico_fsbr.infra.exceptions.BusinessException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
@@ -33,7 +34,9 @@ public class ParkingSpotServiceImpl implements ParkingSpotService{
             throw new BusinessException("Já existe uma vaga cadastrada com mesmo identificador");
         }
         ParkingSpot parkingSpot = new ParkingSpot();
-        BeanUtils.copyProperties(dto, parkingSpot);
+        parkingSpot.setCode(dto.code());
+        parkingSpot.setHourlyRate(dto.hourlyRate());
+        parkingSpot.setType(ParkingSpotType.valueOf(dto.type()));
         parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
 
         return this.save(parkingSpot);

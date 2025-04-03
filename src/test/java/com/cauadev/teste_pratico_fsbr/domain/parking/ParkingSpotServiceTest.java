@@ -28,7 +28,7 @@ class ParkingSpotServiceTest {
 
     @Test
     void shouldCreateParkingSpot() {
-        CreateParkingSpotDto dto = new CreateParkingSpotDto("A1", new BigDecimal(10.0), ParkingSpotType.COMMON);
+        CreateParkingSpotDto dto = new CreateParkingSpotDto("A1", new BigDecimal(10.0), "COMMON");
         ParkingSpot parkingSpot = service.create(dto);
 
         assertNotNull(parkingSpot.getId());
@@ -40,7 +40,7 @@ class ParkingSpotServiceTest {
 
     @Test
     void shouldNotAllowCreateParkingSpotWithDuplicateCode() {
-        CreateParkingSpotDto dto = new CreateParkingSpotDto("A1", new BigDecimal(10.0), ParkingSpotType.COMMON);
+        CreateParkingSpotDto dto = new CreateParkingSpotDto("A1", new BigDecimal(10.0), "COMMON");
         final ParkingSpot parkingSpot = service.create(dto);
 
         BusinessException thrown = assertThrows(BusinessException.class, () -> service.create(dto));
@@ -49,7 +49,7 @@ class ParkingSpotServiceTest {
 
     @Test
     void shouldCreateParkingSpotVip() {
-        CreateParkingSpotDto dto = new CreateParkingSpotDto("A1", new BigDecimal(20.0), ParkingSpotType.VIP);
+        CreateParkingSpotDto dto = new CreateParkingSpotDto("A1", new BigDecimal(20.0), "VIP");
         ParkingSpot parkingSpot = service.create(dto);
 
         assertNotNull(parkingSpot.getId());

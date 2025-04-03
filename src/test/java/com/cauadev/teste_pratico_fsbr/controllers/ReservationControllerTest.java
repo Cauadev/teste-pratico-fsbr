@@ -45,7 +45,7 @@ class ReservationControllerTest {
     @BeforeAll
     void setup() {
         parkingSpotRepository.deleteAll();
-        parkingSpotService.create(new CreateParkingSpotDto("A1", new BigDecimal(10.0), ParkingSpotType.COMMON));
+        parkingSpotService.create(new CreateParkingSpotDto("A1", new BigDecimal(10.0), "COMMON"));
     }
 
     @Test
