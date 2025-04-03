@@ -71,7 +71,7 @@ public class ReservationServiceImpl implements ReservationService{
 
         final var totalToPay = this.calculateTotalToPay(reservation.getStartDate(), reservation.getEndDate(), reservation.getParkingSpot().getHourlyRate());
 
-        return new CloseReservationDto(reservation.getStartDate(), reservation.getEndDate(), totalToPay);
+        return new CloseReservationDto(reservation.getStartDate(), reservation.getEndDate(), totalToPay, reservation.getParkingSpot(), reservation.getCustomer());
     }
 
 

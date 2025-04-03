@@ -2,6 +2,7 @@ package com.cauadev.teste_pratico_fsbr.domain.reservation;
 
 import com.cauadev.teste_pratico_fsbr.domain.customer.dtos.CustomerDto;
 import com.cauadev.teste_pratico_fsbr.domain.parking.ParkingSpot;
+import com.cauadev.teste_pratico_fsbr.domain.parking.ParkingSpotRepository;
 import com.cauadev.teste_pratico_fsbr.domain.parking.ParkingSpotService;
 import com.cauadev.teste_pratico_fsbr.domain.parking.dtos.CreateParkingSpotDto;
 import com.cauadev.teste_pratico_fsbr.domain.parking.enums.ParkingSpotStatus;
@@ -9,10 +10,9 @@ import com.cauadev.teste_pratico_fsbr.domain.parking.enums.ParkingSpotType;
 import com.cauadev.teste_pratico_fsbr.domain.reservation.dtos.CloseReservationDto;
 import com.cauadev.teste_pratico_fsbr.domain.reservation.dtos.CreateReservationDto;
 import com.cauadev.teste_pratico_fsbr.infra.exceptions.BusinessException;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -21,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ReservationServiceTest {
 
     @Autowired
@@ -32,10 +33,19 @@ class ReservationServiceTest {
     @Autowired
     private ReservationRepository repository;
 
+    @Autowired
+    private ParkingSpotRepository parkingSpotRepository;
+
+    @BeforeAll
+    void setup(){
+        parkingSpotRepository.deleteAll();
+        parkingSpotService.create(new CreateParkingSpotDto("A1", new BigDecimal(10.0), ParkingSpotType.COMMON));
+        parkingSpotService.create(new CreateParkingSpotDto("A2", new BigDecimal(10.0), ParkingSpotType.COMMON));
+    }
+
+
     @Test
     void shouldCreateReservation() {
-        parkingSpotService.create(new CreateParkingSpotDto("A1", new BigDecimal(10.0), ParkingSpotType.COMMON));
-
         CustomerDto customer = new CustomerDto("Teste", "99999999999");
         CreateReservationDto dto = new CreateReservationDto("A1", customer);
         final Reservation reservation = service.createReservation(dto);
@@ -60,13 +70,12 @@ class ReservationServiceTest {
         assertEquals("Vaga já reservada", thrown.getMessage());
     }
 
-
     @Test
-    void shouldCloseReservation() {
-        final CloseReservationDto closeReservationDto = service.closeReservation(1L);
-        final ParkingSpot parkingSpot = parkingSpotService.findByCode("A1").get();
+    void shouldCloseReservation() throws InterruptedException {
+        service.createReservation(new CreateReservationDto("A2", new CustomerDto("Teste", "99999999999")));
+        final CloseReservationDto closeReservationDto = service.closeReservation(2L);
 
-        assertEquals(ParkingSpotStatus.AVAILABLE, parkingSpot.getStatus());
+        assertEquals(ParkingSpotStatus.AVAILABLE, closeReservationDto.parkingSpot().getStatus());
 
         assertNotNull(closeReservationDto.startDate());
         assertNotNull(closeReservationDto.endDate());
