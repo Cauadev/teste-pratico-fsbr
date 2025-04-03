@@ -36,6 +36,10 @@ public class ReservationServiceImpl implements ReservationService{
             throw new BusinessException("Vaga informada é inexistente");
         });
 
+        if(parkingSpot.getStatus().equals(ParkingSpotStatus.RESERVED)){
+            throw new BusinessException("Vaga já reservada");
+        }
+
         //BUSCA O CLIENTE PELO CPF, CASO NÃO ENCONTRE, CRIA UM NOVO CLIENTE
         final Customer customer = customerService.findByCpf(dto.customer().cpf())
                 .orElseGet(() -> customerService.save(new Customer(dto.customer().fullName(), dto.customer().cpf())));
@@ -71,7 +75,7 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
 
-    private BigDecimal calculateTotalToPay(LocalDateTime startDate, LocalDateTime endDate, BigDecimal hourlyRate) {
+    public static BigDecimal calculateTotalToPay(LocalDateTime startDate, LocalDateTime endDate, BigDecimal hourlyRate) {
         if (startDate == null || endDate == null || hourlyRate == null || endDate.isBefore(startDate)) {
             throw new BusinessException("Datas inválidas ou preço da hora não informado.");
         }

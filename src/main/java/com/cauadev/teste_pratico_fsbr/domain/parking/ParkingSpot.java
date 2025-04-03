@@ -49,6 +49,19 @@ public class ParkingSpot {
         this.reservations = reservations;
     }
 
+    public ParkingSpot(String code, BigDecimal hourlyRate, ParkingSpotType type) {
+        this.code = code;
+        this.hourlyRate = hourlyRate;
+        this.type = type;
+    }
+
+    public ParkingSpot(String code, BigDecimal hourlyRate, ParkingSpotType type, ParkingSpotStatus status) {
+        this.code = code;
+        this.hourlyRate = hourlyRate;
+        this.type = type;
+        this.status = status;
+    }
+
 
     public Long getId() {
         return id;
